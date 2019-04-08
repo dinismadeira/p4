@@ -1,0 +1,10 @@
+WIDTH=16;
+    DEPTH=32768;
+
+    ADDRESS_RADIX=HEX;
+    DATA_RADIX=HEX;
+
+    CONTENT BEGIN
+        [0..7fff] : 0000;
+    END;
+    

@@ -1,0 +1,43 @@
+{
+	"app_name": "p4",
+	"author": "Dinis Madeira",
+	"build": {
+		"nwVersion": "0.32.2",
+		"nwFlavor": "sdk"
+	},
+	"dependencies": {
+		"fs-extra": "^7.0.1"
+	},
+	"description": "P4 Assembler and Simulator",
+	"devDependencies": {
+		"clean-css": "^4.2.1",
+		"html-minifier": "^3.5.21",
+		"minify-html-literals": "^1.1.2",
+		"nwjs-builder-phoenix": "^1.14.8",
+		"uglify-es": "^3.3.9"
+	},
+	"license": "ISC",
+	"main": "index.htm",
+	"name": "p4",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dist": "build --tasks win-x64,win-x86,linux-x64,linux-x86,mac-x64",
+		"start": "run --x86"
+	},
+	"version": "1.0.5",
+	"webkit": {},
+	"window": {
+		"frame": true,
+		"fullscreen": false,
+		"height": 600,
+		"id": "p4",
+		"min_height": 600,
+		"min_width": 800,
+		"position": "center",
+		"show": true,
+		"title": "P4 Assembler and Simulator",
+		"toolbar": true,
+		"width": 1000,
+		"icon": "p4.png"
+	}
+}

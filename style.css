@@ -1,0 +1,531 @@
+@font-face {
+    font-family: Terminal;
+    src: url('fonts/cp437.ttf') format('truetype');
+    font-display: block;
+}
+@font-face {
+    font-family: HEX;
+    src: url("fonts/Segment7Standard.otf") format("opentype");
+    font-display: block;
+}
+
+@font-face {
+    font-family: LCD;
+    src: url("fonts/lcd-dot-matrix-hd44780u.ttf") format("truetype");
+    font-display: block;
+}
+
+
+body {
+    font-size: 14px;
+    font-family: sans-serif;
+    color: #131a12;
+    margin: 0;
+}
+#header {
+    text-align: center;
+}
+.buttons > button {
+    width: 100px;
+    margin: 1px;
+}
+#bodyContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+button, .button {
+    border-radius: 3px;
+    border: 0;
+    line-height: 2;
+    min-width: 80px;
+    background-color: #2e412b;
+    color: #fff;
+}
+select {
+    height: 30px;
+    min-width: 100px;
+    border-radius: 3px;
+    border: 1px solid #2e412b;
+    font-size: 14px;
+}
+#editorContainer {
+    height: 67vh;
+    width: 700px;
+    max-height: 800px;
+}
+.CodeMirror {
+    height: 100%;
+    border: 1px solid gray;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+#out {
+    height: 67vh;
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14px;
+    tab-size: 4;
+    white-space: pre;
+}
+.cornerButton {
+    min-width: initial;
+    width: 35px;
+    font-size: 24px;
+    line-height: 30px;
+    vertical-align: middle;
+    border: 1px rgba(0, 0, 0, 0.20) solid;
+    background-color: rgba(194, 194, 194, 0.3);
+    font-weight: bold;
+}
+#fullscreen {
+    position: fixed;
+    right: 15px;
+    top: 15px;
+    z-index: 2;
+}
+select:disabled {
+    border-color: #c3c2c2;
+}
+input.round {
+    height: 26px;
+    border-radius: 3px;
+    border: 1px solid #2e412b;
+    font-size: 14px;
+    padding-left: 5px;
+}
+input.large {
+    width: 279px;
+}
+a {
+    color: #000;
+}
+
+#fullscreen:hover {
+    background-color: rgba(87, 146, 255, 1);
+}
+
+.hl-line {
+    background-color: rgba(27, 255, 0, 0.4);
+}
+
+
+#bodyContainer > div {
+    margin: 1px;
+}
+textarea {
+    height: 50vh;
+}
+#labels {
+    font-family: monospace;
+    white-space: pre;
+}
+a.button {
+    text-decoration: none;
+    display: inline-block;
+    padding: 1px 6px;
+}
+
+button:hover, .button:hover {
+    background-color: #131a12;
+    cursor: pointer;
+}
+button:disabled {
+    background-color: #c3c2c2;
+    cursor: default;
+}
+button:focus {
+    outline: none;
+}
+.buttons > .spacer {
+    flex: 1;
+}
+.CodeMirror .ruler, .CodeMirror .rulerExtra {
+	display: none;
+}
+
+.CodeMirror.showRulers .ruler,
+.CodeMirror.showRulersExtra .rulerExtra {
+	display: block;
+}
+#fileMenu {
+    display: flex;
+}
+.topMenu {
+    margin: 3px 0;
+    height: 30px;
+}
+#fileMenu > #fileSelect {
+    flex: 1;
+}
+#fileMenu > * {
+    margin-left: 3px;
+}
+#fileMenu > button {
+    width: 80px;
+}
+label {
+    cursor: pointer;
+    user-select: none;
+}
+
+#outMessage {
+    font-weight: bold;
+}
+#outMessage.error {
+    color: red;
+}
+
+#simSpeedInput {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#simSpeedInputRange {
+    width: 65px;
+}
+#simClocksSpeed {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    white-space: nowrap;
+}
+#simClocksSpeed > span {
+    min-width: 150px;
+    margin-right: 10px;
+}
+
+
+#simLCD {
+    font-family: LCD, monospace;
+    margin: 0;
+    background-color: #5792ff;
+    color: #fff;
+    font-size: 24px;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 0 5px 5px 5px;
+}
+
+#simLCD.off {
+    background-color: #163e89;
+    color: transparent;
+}
+
+.terminal {
+    font-family: Terminal;
+    color: #fff;
+    background-color: #000;
+    white-space: pre-wrap;
+    border: solid 1px gray;
+    margin: 5px auto;
+    padding: 5px;
+    border-radius: 5px;
+}
+#simTerminal {
+    font-size: 9px;
+    line-height: 9px;
+    width: 720px;
+    height: 405px;
+    resize: both;
+    overflow: hidden; /* necessary for resize */
+    position: relative;
+}
+#simTerminal:focus {
+    box-shadow: #5792ff 0 0 10px, #5792ff 0 0 10px, #5792ff 0 0 10px;
+}
+
+#simTerminal.fullscreen {
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+}
+
+#simTerminal.fullscreen:focus {
+    box-shadow: none;
+}
+
+/* Terminal Fullscreen Button */
+#simTerminal > button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.5;
+    min-width: initial;
+    width: 28.4px;
+}
+#simTermina > button:hover {
+    opacity: 1;
+}
+
+#simTerminal > span {
+    /* display: contents; */
+}
+
+#simLEDs > span {
+    background-color: #ccc;
+    display: inline-block;
+    width: 28px;
+    margin: 0 3px;
+    height: 5px;
+}
+#simLEDs > span.on {
+    background-color: #ff3d00;
+}
+
+
+#display {
+    font-family: HEX, monospace;
+    font-size: 59px;
+    line-height: 49px;
+    color: #ff3d00;
+    text-shadow: 1px -1px 2px rgba(255, 0, 0, 0.5);
+    margin-top: 10px;
+}
+
+#simPushButtons > button {
+    width: 32px;
+    min-width: initial;
+    border: solid 1px white;
+    margin: 2px 6px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 28px;
+    height: 48px;
+    margin: 0 3px;
+}
+.switch input {display:none;}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+input:checked + .slider {
+    background-color: red;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateY(-20px);
+    -ms-transform: translateY(-20px);
+    transform: translateY(-20px);
+}
+
+#IOContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#registerDisplay {
+    font-family: monospace;
+    background-color: #2e412b;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    display: table;
+    cursor: pointer;
+    /* text-align: right; */
+}
+#registerDisplay span {
+    white-space: pre;
+}
+
+#board { 
+    background-color: #2e412b;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+}
+
+#simSpeedInputText {
+    width: 80px;
+    display: inline-block;
+    text-align: center;
+}
+
+#simAccelerometer > input {
+    width: 106px;
+}
+
+#boardConsole {
+    width: 700px;
+    height: 35vh;
+    white-space: pre;
+}
+
+#simulatorContainer {
+    padding-top: 13px;
+    text-align: center;
+}
+
+.stickyHeader {
+    background-color: #fff;
+    z-index: 1;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.25);
+}
+
+.stickyHeader > .title {
+    font-size: 1.5em;
+    padding: 10px 0;
+    font-weight: bold;
+}
+
+#boardContainer {
+    text-align: center;
+    padding-top: 13px;
+}
+
+
+#simMemory {
+    display: inline-flex;
+    align-items: flex-start;
+}
+
+#simProgramDataMemory {
+    display: flex;
+    flex-direction: column;
+}
+#simProgramAssembly {
+    min-width: 230px;
+}
+.memory {
+    border: 1px solid gray;
+    border-radius: 3px;
+    display: inline-block;
+    font-family: monospace;
+    margin: 5px;
+    white-space: pre;
+    text-align: left;
+}
+.memory > :first-child { 
+    background-color: #2e412b;
+    color: #fff;
+    padding: 1px 3px;
+}
+.memoryDataRow > span, .charDataRow {
+    margin: 0 5px;
+}
+.memoryAddr {
+    background-color: #f7f7f7;
+    color: #999;
+    padding: 0 4px 0 2px;
+}
+.memory input[type="text"] {
+    width: 50px;
+    font-family: monospace;
+}
+.memory input[type="range"] {
+    width: 80px;
+}
+.memoryAddrInputRow {
+    display: flex;
+    align-items: center;
+}
+.memoryAddrInputRow > input[type="range"] {
+    flex-grow: 1;
+}
+.memoryScrollableContainer {
+    display: flex;
+}
+.memoryScrollableContent {
+    flex: 1;
+}
+.memoryScroll {
+    cursor: pointer;
+}
+.memoryScroll:hover, .memoryScroll.grabbed {
+    background-color: rgba(0, 0, 0, .025);
+}
+.memoryScrollThumb {
+    width: 12px;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid 1px rgba(0, 0, 0, 0.33);
+    position: relative;
+    top: 0;
+    border-radius: 4px;
+    margin: 1px;
+}
+.memoryScrollThumb:hover, .memoryScroll.grabbed > .memoryScrollThumb {
+    background-color: rgba(0, 0, 0, .15);
+}
+
+#footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+}
+
+#mifUploadText {
+    width: 300px;
+}
+
+#boardMemoryGrid {
+    display: inline-grid;
+    grid-gap: 5px;
+    grid-template-columns: auto auto auto;
+    text-align: left;
+}
+
+#boardMemoryGrid > label {
+    display: flex;
+    align-items: center;
+}
+#boardMemoryGrid input[type="text"] {
+    direction: rtl;
+    text-align: left;
+}
+#boardExecInput {
+    font-family: monospace;
+}
+
+#boardControlAvailable, #boardControlQuartusInstall {
+    display: none;
+}
+
+.separator {
+	color: #c3c2c2;
+    font-size: 10px;
+    margin: 10px 0 3px 0;
+}
+.separator:before, .separator:after {
+    content: " - ";
+}
+
+#boardPCRI, #boardInstruction {
+    font-family: monospace;
+    white-space: nowrap;
+}

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <title data-i18n>P4 Assembler and Simulator</title>
+        <link rel="preload" href="fonts/lcd-dot-matrix-hd44780u.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+        <link rel="preload" href="fonts/cp437.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+        <link rel="preload" href="fonts/Segment7Standard.otf" as="font" type="font/otf" crossorigin="anonymous">
+        <link rel="stylesheet" href="scripts/codemirror-5.38.0/lib/codemirror.css">
+        <link rel="stylesheet" href="style.css">
+        <script src="scripts/codemirror-5.38.0/lib/codemirror.min.js"></script>
+        <script src="scripts/codemirror-5.38.0/addon/lint/lint.js"></script>
+        <script src="scripts/codemirror-5.38.0/addon/display/rulers.js"></script>
+        <script src="scripts/codemirror-5.38.0/addon/search/search.js" defer></script>
+        <script src="scripts/codemirror-5.38.0/addon/search/searchcursor.js" defer></script>
+        <script src="scripts/codemirror-5.38.0/addon/dialog/dialog.js" defer></script>
+        <script src="scripts/codemirror-5.38.0/mode/p4/p4.js"></script>
+        <script src="scripts/cp437.js"></script>
+        <script src="scripts/i18n.js"></script>
+        <script src="scripts/i18n-pt.js"></script>
+        <script src="scripts/assembler.js"></script>
+        <script src="scripts/generateMIF.js"></script>
+        <script src="scripts/script.js"></script>
+        <script src="scripts/simUI.js"></script>
+        <script src="scripts/UI.js" defer></script>
+        <script src="scripts/modal.js" defer></script>
+        <script src="scripts/disassembler.js" defer></script>
+        <script src="scripts/sim.js" defer></script>
+        <script src="scripts/parseMIF.js" defer></script>
+        <script src="scripts/jszip.min.js" defer></script>
+        <script src="scripts/writeProgram.js" defer></script>
+        <script src="scripts/readProgram.js" defer></script>
+        <script src="scripts/FileSaver.min.js" defer></script>
+        <script src="scripts/TerminalEditor.js" defer></script>
+        <script src="scripts/FontEditor/inflate.js" defer></script>
+        <script src="scripts/FontEditor/png.js" defer></script>
+        <script src="scripts/FontEditor/FontEditor.js" defer></script>
+        <link rel="stylesheet" href="scripts/codemirror-5.38.0/addon/lint/lint.css">
+        <link rel="stylesheet" href="scripts/codemirror-5.38.0/addon/dialog/dialog.css">
+        <link rel="stylesheet" href="scripts/codemirror-5.38.0/theme/eclipse.css">
+        <link rel="preload" href="demos/Welcome.js" as="script">
+        <meta name="viewport" content="width=700px, initial-scale=1.0">
+        <meta name="description" content="P4 Assembler and Simulator">
+    </head>
+
+    <body>
+    <button id="fullscreen" class="cornerButton" title="Toggle Full Screen">↗</button>
+    <div id="header">
+        <h1 data-i18n>P4 Assembler and Simulator</h1>
+        <p data-i18n>Assembler and Simulator for the P4 educational CPU.</p>
+        <div class="buttons">
+            <button id="assembleButton" data-i18n>Assemble</button>
+            <button id="loadButton" data-i18n>Load</button>
+            <button id="simulateButton" data-i18n>Run</button>
+            <button id="programButton" data-i18n>Program</button>
+        </div>
+    </div>
+    <div id="bodyContainer">
+        <div>
+            <span class="topMenu" id="fileMenu">
+                <button id="uploadFileButton" data-i18n>Open…</button>
+                <select id="fileSelect">
+                    <option data-new data-i18n>New File…</option>
+                    <optgroup id="fileSavedGroup" label="Saved Files"></optgroup>
+                    <optgroup id="fileDemosGroup" label="Demos"></optgroup>
+                </select>
+                <button id="newFileButton" data-i18n>New</button>
+                <button id="saveFileButton" data-i18n>Save</button>
+                <button id="deleteFileButton" data-i18n>Delete</button>
+            </span>
+            <div id="editorContainer"></div>
+            <div>
+                <label><input type="checkbox" data-sets id="linter"> <span data-i18n>Auto Assemble</span>.</input></label>
+                <label><input type="checkbox" data-sets id="autoLoad"> <span data-i18n>Auto Load</span>.</input></label>
+                <label><input type="checkbox" data-sets id="rulers"> <span data-i18n>Rulers</span>.</input></label>
+                <label><input type="checkbox" data-sets id="rulersExtra"> <span data-i18n>Extra Rulers</span>.</input></label>
+                <span data-i18n>Download</span>:
+                <a id="downloadSource" target="_blank" href="javascript:" title="Download as text file (.as)" data-i18n>Source</a>
+                <a id="downloadProgram" target="_blank" href="javascript:" title="Download zipped MIFs (.p4z)" data-i18n>Program</a>
+            </div>
+        </div>
+        <div>
+            <div class="topMenu">
+                <select id="outputType" data-sets>
+                    <option value="errors" data-i18n>Errors</option>
+                    <option value="debug" data-i18n>Debug</option>
+                    <option value="labels" data-i18n>Labels</option>
+                    <option value="MIF">MIF</option>
+                    <option value="BIN">BIN</option>
+                    <option value="HEX">HEX</option>
+                    <!-- <option value="ASCII">ASCII</option> -->
+                    <option value="none" data-i18n>None</option>
+                    <!-- <option value="IntelHex">Intel Hex</option> -->
+                </select>
+                <span id="outMessage"></span>
+            </div>
+            <textarea id="out" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        </div>
+    </div>
+    <div id="simulatorContainer">
+        <div id="simulatorHeader" class="stickyHeader">
+            <div class="title" data-i18n>Simulator</div>
+            <div id="simButtons">
+                <button id="simStartStop" data-i18n>Start</button>
+                <button id="simStep" data-i18n>Step</button> 
+                <button id="simReset" data-i18n>Reset</button></div>
+            <div id="simClocksSpeed">
+                <span><span data-i18n>Clocks</span>: <span id="simClocks">0</span></span>
+                <span><span data-i18n>Speed</span>: <span id="simSpeed">0 Hz</span></span>
+                <span id="simSpeedInput">
+                    <input type="range" min="0" max="10" value="0" id="simSpeedInputRange" data-sets>
+                    <span id="simSpeedInputText"></span>
+                </span>
+            </div>
+        </div>
+        <div id="IOContainer">
+            <div id="registerDisplay">
+                <div>PC: <span id="simPC">0000</span></div>
+                <div>RI: <span id="simRI">0000</span></div>
+                <br>
+                <div id="simRegisterBank"></div>
+                <br>
+                <div>EZCNO<br><span id="simSR">00000</span></div>
+            </div>
+            <div id="board">
+                <pre id="simLCD">                <br>                </pre>
+                <div id="display">000000</div>
+                <div id="simLEDs"></div>
+                <div id="simSwitches"></div>
+                <div id="simAccelerometer">
+                    <!-- values are complemented in the simulator, this will become -256 to 255 -->
+                    <input type="range" min="-491520" max="491520" value="0" id="simAccelerometerX" title="X-Axis Acceleration">
+                    <input type="range" min="-491520" max="491520" value="0" id="simAccelerometerY" title="Y-Axis Acceleration">
+                    <input type="range" min="-491520" max="491520" value="0" id="simAccelerometerZ" title="Z-Axis Acceleration">
+                </div>
+                <div id="simPushButtons">
+                    <button value="6" title="SELECT">●</button>
+                    <button value="5" title="LEFT">◀</button>
+                    <button value="3" title="UP">▲</button>
+                    <button value="4" title="DOWN">▼</button>
+                    <button value="2" title="RIGHT">▶</button>
+                    <button value="0" title="KEY0">0</button>
+                    <button value="1" title="KEY1">1</button>
+                </div>
+            </div>
+        </div>
+        <div id="simMemory">
+            <div id="simProgramAssembly" class="memory"><div data-i18n>Disassembled Program</div></div>
+            <div id="simProgramDataMemory">
+                <div id="simProgramMemory" class="memory"><div data-i18n>Program Memory</div></div>
+                <div id="simDataMemory" class="memory"><div data-i18n>Data Memory</div></div>
+            </div>
+        </div>
+        <div id="simTerminal" class="terminal" tabindex="0"><div id="simTerminalContent"></div></div>
+        <a id="simTerminalEdit" href="javascript:" data-i18n>Edit Text</a>
+        <a id="fontEditorLink" href="javascript:" data-i18n>Edit Font</a>
+    </div>
+    <div id="boardContainer">
+        <div class="stickyHeader">
+            <div data-i18n class="title">Board Interface</div>
+        </div>
+        <div id="boardControlAvailable">
+            <p id="boardMessage"></p>
+            <div>
+                <span id="boardSelectDevice">
+                    <select id="boardDevices"></select>
+                    <button id="boardScanDevices" data-i18n>Search Devices</button>
+                </span>
+                <span id="boardControlDevice">
+                    <button id="boardInstallP4" data-i18n>Install P4</button>
+                    <p>
+                        <div class="separator" data-i18n>Memory Write</div>
+                        <div id="boardMemoryGrid">
+                            <label><input type="checkbox" id="checkProgramMIF" checked /><span data-i18n>Program</span></label>
+                            <input type="text" class="round large" id="programMIF" data-filepicker=".mif,.hex" readonly placeholder="Assembled Program" />
+                            <button id="updateProgramMemory" data-i18n>Write Memory</button>
+                            <label><input type="checkbox" id="checkDataMIF" checked /><span data-i18n>Data</span></label>
+                            <input type="text" class="round large" id="dataMIF" data-filepicker=".mif,.hex" readonly placeholder="Assembled Program" />
+                            <button id="updateDataMemory" data-i18n>Write Memory</button>
+                            <label><input type="checkbox" id="checkFontMIF" /><span data-i18n>Font</span></label>
+                            <input type="text" class="round large" id="fontMIF" data-filepicker=".mif,.hex" readonly placeholder="Default Font" />
+                            <button id="updateFontMemory" data-i18n>Write Memory</button>
+                            <label><input type="checkbox" id="checkPaletteMIF" /><span data-i18n>Palette</span></label>
+                            <input type="text" class="round large" id="paletteMIF" data-filepicker=".mif,.hex" readonly placeholder="Default Palette" />
+                            <button id="updatePaletteMemory" data-i18n>Write Memory</button>
+                        </div>
+                    </p>
+                    <button id="boardInstallMIF" data-i18n>Write Selected Memories</button>
+                    <div id="boardControl">
+                        <div class="separator" data-i18n>Debug</div>
+                        <div id="boardPCRI">PC: <span id="boardPC">0000</span> RI: <span id="boardRI">0000</span></div>
+                        <div id="boardInstruction">&nbsp;</div>
+                        <p>
+                            <!-- <button id="boardUpdateAuto" data-i18n>Auto Update</button> -->
+                            <button id="boardUpdate" data-i18n>Update</button>
+                            <button id="boardStart" data-i18n>Start</button>
+                            <button id="boardStop" data-i18n>Stop</button>
+                            <button id="boardStep" data-i18n>Step</button>
+                            <button id="boardReset" data-i18n>Reset</button>
+                        </p>
+                        <p>
+                            <input type="text" class="round large" id="boardExecInput" />
+                            <button id="boardExec" data-i18n>Execute Instruction</button>
+                        </p>
+                    </div>
+                </span>
+            </div>
+            <div class="separator" data-i18n>Log Window</div>
+            <textarea id="boardConsole" readonly></textarea>
+        </div>
+        <div id="boardControlUnavailable">
+            <p data-i18n>To control the board you need to install the desktop app.</p>
+            <p><a href="dist/" data-i18n>Click here to download the desktop app.</a></p>
+        </div>
+        <div id="boardControlQuartusInstall">
+            <p><a href="http://fpgasoftware.intel.com/?edition=lite" target="_blank" data-i18n>To control the board you need to install Quartus.</a></p>
+            <p data-i18n>If you already have Quartus installed in your system, please select its instalation path below:</p>
+            <p><input id="quartusFolder" type="file" nwdirectory /></p>
+            <p id="quartusFolderResult"></p>
+        </div>
+    </div>
+    <div id="footer">
+        <span>
+            <a id="backupSettings" target="_blank" download="P4.bak.json" href="javascript:" data-i18n>Backup Files and Settings.</a>
+            <a id="restoreSettings" href="javascript:" data-i18n>Restore a Backup.</a>
+        </span>
+        <span>
+            <span data-i18n>Language</span>:
+            <select id="lang" data-sets>
+                <option value="en">English</option>
+                <option value="pt">Português</option>
+            </select>
+        </span>
+    </div>
+    <input type="file" id="fileUpload" style="display: none;" />
+    <input type="file" id="filePicker" style="display: none;" />
+    <script>
+        if (typeof require == 'function') {
+            const script = document.createElement("script");
+            script.setAttribute("src", "scripts/board.js");
+            script.setAttribute("defer", "");
+            document.head.appendChild(script);
+        }
+    </script>
+    </body>
+</html>
