@@ -479,7 +479,7 @@ const ALU = (unit, op, RC, RA, RB) => {
             switch (op) {
                 case ALU.SHR: r = () => a() >> 1; break; // SHR
                 case ALU.SHL: r = () => a() << 1; break; // SHL
-                case ALU.SHRA: r = () => a() >> 1; break; // SHRA
+                case ALU.SHRA: r = () => (a() >> 1) | (a() & 0x8000); break; // SHRA
                 case ALU.SHLA: r = () => a() << 1; overflow = r => (a() >>> 15) ^ (r >>> 15);  break; // SHLA // overflow when a is negative and r is positive
                 case ALU.ROR: r = () => ((a() & 1) << 15) | (a() >> 1); break; // ROR
                 case ALU.ROL: r = () => (a() << 1) | (a() >> 15); break; // ROL
