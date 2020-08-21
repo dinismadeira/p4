@@ -35,7 +35,7 @@ const parseElement = element => {
 };
 
 const process = async () => {
-    const contents = (await fs.readFile('index.htm')).toString();
+    const contents = (await fs.readFile('index.html')).toString();
     const filesPromise = [];
     const files = [];
     const minified = {script: [], defer: [], css: [], index: contents};
@@ -75,7 +75,7 @@ const process = async () => {
     const scriptFile = rootDir + `script.js`;
     const deferFile = rootDir + `script-defer.js`;
     const cssFile = rootDir + `styles.css`;
-    const htmFile = rootDir + `index.htm`;
+    const htmFile = rootDir + `index.html`;
 
     const UglifyJSOptions = {
         compress: {
