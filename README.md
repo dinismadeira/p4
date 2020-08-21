@@ -2,6 +2,8 @@
 
 This is the source code for the Assembler and Simulator for the P4 educational CPU.
 
+You can see the online version here: https://dinismadeira.github.io/p4/
+
 ## Running the Assembler and Simulator for the P4 educational CPU
 
 ### On the web browser:
